@@ -2,4 +2,5 @@ ans.txt
 sbs
 sbs_words.txt
 setup
-
+access.token
+push.sh
