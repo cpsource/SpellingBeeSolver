@@ -1,3 +1,4 @@
+/* build sbs_words.txt from words.txt */
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
@@ -5,13 +6,17 @@
 
 unsigned char work_buffer[256];
 unsigned char ok_buf[256];
+unsigned char symbols[256];
 
 int main(int argc, char *argv[])
 {
   FILE *inf, *outf;
   char *c;
+  int ok_flag;
+  int symbol_count;
+  int i;
 
-  for ( int i = 'a' ; i <= 'z' ; i++ ) {
+  for ( i = 'a' ; i <= 'z' ; i++ ) {
     ok_buf[i] = 1;
   }
 
@@ -27,22 +32,59 @@ int main(int argc, char *argv[])
     c = strchr(work_buffer,'\n'); if ( c ) *c = 0;
     len = strlen(work_buffer);
     if ( len < 4 ) continue;
+
+    //printf("%4d : %s\n",len,work_buffer);
+
+/* make all lower case */
     c = work_buffer;
     while ( *c != 0 ) {
       *c = tolower(*c);
       c += 1;
     }
 
+    //printf("%4d : %s\n",len,work_buffer);
+
+/* only take these symbols */
     c = work_buffer;
     while ( *c != 0 ) {
       if ( !ok_buf[*c] ) goto next;
       c += 1;
     }
-  
-    fprintf(outf,"%s\n",work_buffer);
+
+    //printf("%4d %s\n",len,work_buffer);
+
+    ok_flag = 0; 
+    switch ( len ) {
+	case 4:
+	case 5:
+	case 6:
+	case 7:
+		ok_flag = 1;
+		break;
+	default:
+		/* must contain 1->7 symbols */
+		memset(symbols,0,sizeof(symbols));
+		c = work_buffer;
+		while ( *c != 0 ) {
+			symbols[*c] = 1;
+			c += 1;
+		}
+		for ( symbol_count = i = 0 ; i < 256 ; i++ ) {
+			if ( symbols[i] ) symbol_count += 1;
+		}
+		if ( symbol_count >= 1 && symbol_count <= 7 ) ok_flag=1;
+		break;
+    } /* switch */
+
+    if ( ok_flag ) {
+	fprintf(outf,"%s\n",work_buffer);
+	//printf("%s\n",work_buffer);
+    } else {
+	printf("BAD: %s\n",work_buffer);
+    }
 
   next:;
-  }
+  } /* while inf */
   fclose(inf); fclose(outf);
   return 0;
 }

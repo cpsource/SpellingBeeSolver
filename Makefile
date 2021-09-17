@@ -1,5 +1,5 @@
 
-all: setup sbs worst letter tri
+all: setup letter sbs worst tri
 
 setup: setup.c
 	gcc -O2 -o setup setup.c
@@ -13,6 +13,7 @@ worst: worst.c worst.h tri_list.h
 
 letter: letter.c
 	gcc -O2 -o letter letter.c
+	./letter
 
 tri: tri.c
 	gcc -O2 -o tri tri.c

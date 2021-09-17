@@ -1,3 +1,4 @@
+/* build sbs_<letter>_words.txt from sbs_words.txt */
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
