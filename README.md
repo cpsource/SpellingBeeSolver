@@ -25,6 +25,7 @@ Notes
   The word list came from english-words on Github and contains many
   words that are not accepted by Spelling Bee.
   
-
+  The rest of the files here are only for playing around and are not
+  documented.
 
 
