@@ -49,11 +49,29 @@ int check_tri_list(char *str)
 /* return true if try_list[4] characters are in str[7] */
 int in_tri_list(char *str)
 {
+  char myquad[5];
+  int i;
+  char *c;
+
+  for ( i = 0 ; i < 4 ; i++ ) {
+	myquad[i] = str[i];
+  }
+  myquad[4] = 0;
+ 
+#if 1
+  for ( i = 0 ; (c=tri_list[i]) ; i++ ) {
+	if ( 0 == strcmp(c,myquad)) return 1;
+  }
+  three_skip_count += 1;
+  return 0;
+#else 
   if ( check_tri_list(str) ) {
 	//printf("in %s %s\n",str,exported_c);
 	return 1;
   }
   printf("IsOut %s\n",str);
+#endif // 1
+
   return 0;
 }
 
@@ -300,9 +318,9 @@ int main()
 	}
 	}	
 	}
-#if 0
-	printf("search_count = %d, vowel_skip_count = %d, three_skip_count = %d\n",
-		search_count, vowel_skip_count,three_skip_count);
+#if 1
+	if ( search_count ) printf("my_trial = %s, search_count = %d, vowel_skip_count = %d, three_skip_count = %d\n",
+		my_trial,search_count, vowel_skip_count,three_skip_count);
 #endif
 	search_count = vowel_skip_count = three_skip_count = 0;
 	}

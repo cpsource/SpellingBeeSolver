@@ -1,7 +1,7 @@
 #ifndef __worst_h__
 #define __worst_h__
 
-#define NUM_VOWELS_NEEDED 0
+#define NUM_VOWELS_NEEDED 2
 
 // much with search space starting point for test
 #define IS_TEST

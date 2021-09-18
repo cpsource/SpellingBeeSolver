@@ -61,7 +61,7 @@ int main(int argc, char *argv[])
 	case 7:
 		ok_flag = 1;
 		break;
-	default:
+	case 8:
 		/* must contain 1->7 symbols */
 		memset(symbols,0,sizeof(symbols));
 		c = work_buffer;
@@ -73,6 +73,8 @@ int main(int argc, char *argv[])
 			if ( symbols[i] ) symbol_count += 1;
 		}
 		if ( symbol_count >= 1 && symbol_count <= 7 ) ok_flag=1;
+		break;
+	default:
 		break;
     } /* switch */
 
