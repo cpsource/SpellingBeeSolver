@@ -8,9 +8,30 @@ unsigned char work_buffer[256];
 unsigned char ok_buf[256];
 unsigned char symbols[256];
 
+char uniq[256];
+int is_uniq(char *str)
+{
+	int u = 0;
+	char *c;
+	int i;
+
+  c = str;
+  memset(uniq,0,256);
+  while (*c) {
+	uniq[*c] = 1;
+	c += 1;
+  }
+
+  for ( i = u = 0; i < 256 ; i++ ) {
+	if ( uniq[i] ) u += 1;
+  }
+
+  return u;
+}
+
 int main(int argc, char *argv[])
 {
-  FILE *inf, *outf;
+  FILE *inf, *outf, *out7;
   char *c;
   int ok_flag;
   int symbol_count;
@@ -24,6 +45,8 @@ int main(int argc, char *argv[])
   if ( !inf ) { printf("words.txt not found\n"); exit(0); }
   outf = fopen("sbs_words.txt","w+");
   if ( !outf) { printf("could not create sbs_words.txt\n"); exit(0); }
+  out7 = fopen("seven_words.txt","w+");
+  if ( !out7 ) { printf("could not create seven_words.txt\n"); exit(0); }
 
   while ( fgets(work_buffer,sizeof(work_buffer), inf) ) {
     int len;
@@ -80,6 +103,7 @@ int main(int argc, char *argv[])
 
     if ( ok_flag ) {
 	fprintf(outf,"%s\n",work_buffer);
+	if ( 7 == is_uniq(work_buffer)) fprintf(out7,"%s\n",work_buffer);
 	//printf("%s\n",work_buffer);
     } else {
 	printf("BAD: %s\n",work_buffer);

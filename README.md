@@ -6,6 +6,7 @@ Build Instructions
   It is known to run on Ubuntu Linux
 
   ./make
+  ./setup
 
 Run Instructions
 

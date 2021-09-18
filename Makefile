@@ -1,9 +1,8 @@
 
-all: setup letter sbs worst tri
+all: setup letter worst tri sbs
 
 setup: setup.c
 	gcc -O2 -o setup setup.c
-	./setup
 
 sbs: sbs.c
 	gcc -O2 -o sbs sbs.c

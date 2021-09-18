@@ -26,6 +26,27 @@ char *tri_list[] = {
 NULL
 };
 
+char uniq[256];
+int is_uniq(char *str)
+{
+	int u = 0;
+	char *c;
+	int i;
+
+  c = str;
+  memset(uniq,0,256);
+  while (*c) {
+	uniq[*c] = 1;
+	c += 1;
+  }
+
+  for ( i = u = 0; i < 256 ; i++ ) {
+	if ( uniq[i] ) u += 1;
+  }
+
+  return u;
+}
+
 char *exported_c;
 /* str is a 7 character string */
 /* tri_list is an array of 4 characters */
