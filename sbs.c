@@ -66,9 +66,31 @@ int main(int argc, char *argv[])
 
 onward:;
     if ( all_seven_flag )
-      printf("* %s\n",work_buffer);
+      printf("       * %s\n",work_buffer);
     else
-      printf("%s\n",work_buffer);
+      printf("       %s\n",work_buffer);
+
+/* add ed if necessary */
+  if ( strchr(argv[1],'e') && strchr(argv[1],'d') ) {
+	int l;
+	char ne[32];
+	int rule=0;
+	strcpy(ne,work_buffer);
+	c = ne;
+	l = strlen(c);
+	if ( c[l-1] == 'e' ) {
+	  c[l] = 'd'; c[l+1]=0;
+	  rule=1;
+	} else {
+	  if ( !(c[l-2] == 'e' && c[l-1] == 'd') ) {
+	    c[l] = 'e'; c[l+1]='d'; c[l+2] = 0;
+	    rule=2;
+	  }
+	}
+	if ( rule && strlen(c) <= 8 ) {
+	  printf("ed(%d): %s\n",rule,c);
+	}
+  } // ed check
 
   next:;
   }

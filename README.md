@@ -25,8 +25,16 @@ Notes
 
   The word list came from english-words on Github and contains many
   words that are not accepted by Spelling Bee.
+
+  SpellingBee has a habbit of adding 'ed' to the ends of some
+  words that are not in the dictionary. Consequently, sbs adds a
+  'd' or 'ed' appropriately so you can check those too. Lines
+  where this is done, are marked with 'r(1)' or 'r(2)'.
+
+Coming Soon
+
+  As we supported 'ed', we will support 'ing' as well.
   
   The rest of the files here are only for playing around and are not
   documented.
-
 
