@@ -2,7 +2,7 @@ ans*.txt
 sbs
 sbs_words.txt
 setup
-access.token
+access*.token
 push.sh
 sbs_[a-z]_words.txt
 letter
