@@ -85,6 +85,10 @@ int main(int argc, char *argv[])
 		ok_flag = 1;
 		break;
 	case 8:
+	case 9:
+	case 10:
+	case 11:
+	case 12:
 		/* must contain 1->7 symbols */
 		memset(symbols,0,sizeof(symbols));
 		c = work_buffer;
