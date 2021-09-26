@@ -31,12 +31,20 @@ Notes
   'd' or 'ed' appropriately so you can check those too. Lines
   where this is done, are marked with 'r(1)' or 'r(2)'.
 
-  sbs will also run on cygwin. Just copy over the Makefile, sbs.c, and sbs_words.txt.
+  sbs will also run on cygwin. Just copy over the Makefile,
+  sbs.c, and sbs_words.txt.
 
+Make your own SpellingBee
+
+  ./pang | sort > new_pangrams.txt
+
+  Where new_pangrams.txt is a three column list as follows:
+    count of words found , pangram letters , pangram word
+
+  Then check a particular set of pangram letters against sbs to be
+  sure there are real words.
+  
 Coming Soon
 
   As we supported 'ed', we will support 'ing' as well.
-  
-  The rest of the files here are only for playing around and are not
-  documented.
 

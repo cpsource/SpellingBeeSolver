@@ -4,10 +4,7 @@ sbs_words.txt
 setup
 access*.token
 push.sh
-sbs_[a-z]_words.txt
-letter
-tri
-zz
-worst
-seven_words.txt
+zz*
 \#*\#
+pang
+*~
