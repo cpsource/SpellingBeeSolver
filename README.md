@@ -31,6 +31,8 @@ Notes
   'd' or 'ed' appropriately so you can check those too. Lines
   where this is done, are marked with 'r(1)' or 'r(2)'.
 
+  sbs will also run on cygwin. Just copy over the Makefile, sbs.c, and sbs_words.txt.
+
 Coming Soon
 
   As we supported 'ed', we will support 'ing' as well.
