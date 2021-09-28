@@ -83,7 +83,8 @@ int find_count(int argc, char *argv[])
   unsigned char work_buffer[256];
   char center_letter;
   FILE *inf;
-
+  int word_12_count = 0;
+  
 #if 0
   if ( argc < 2 ) {
     printf("usage: ./sbs <seven-letters>\n");
@@ -127,7 +128,10 @@ int find_count(int argc, char *argv[])
     }
 
     word_count += 1;
-
+    if ( 12 == strlen(work_buffer) ) {
+      word_12_count += 1;
+    }
+    
     //if ( trace_flag ) printf("cp2: all letters ok\n");
 
     /* does word in sbs_words.txt contain all seven letters ??? */
@@ -139,19 +143,13 @@ int find_count(int argc, char *argv[])
     if ( trace_flag ) printf("%s %s\n",work_buffer,argv[1]);
 
   onward:;
-#if 0
-    if ( all_seven_flag )
-      printf("* %s\n",work_buffer);
-    else
-      printf("%s\n",work_buffer);
-#endif
-
   next:;
-  } /* do for all words in sbs_?_words.txt */
+  } /* do for all words in sbs_words.txt */
   fclose(inf);
 
   if ( trace_flag ) printf("cp3: word_count = %d\n",
 			   word_count);
+  //return word_12_count;
   return word_count;
 }
 
@@ -197,4 +195,3 @@ int main(int argc, char *argv[])
   fclose(inf);
   return 0;
 }
-

@@ -10,17 +10,22 @@ Build Instructions
 
 Run Instructions
 
-  ./sbs <seven-puzzle-letters>
+  ./sbs [-p] <seven-puzzle-letters>
 
   where the first letter must be the center letter.
 
+  and
+
+  if -p is specified, use dictionary popular.txt. It contains
+  less garbage words than sbs_words.txt.
+  
 Example from 09/15/2021 NYT
 
-  ./sbs iardlno > all.txt
+  ./sbs iardlno > ans.txt
 
 Notes
 
-  If a * preceeds the word in all.txt, it is a word that contains
+  If a * preceeds the word in ans.txt, it is a word that contains
   all seven letters.
 
   The word list came from english-words on Github and contains many

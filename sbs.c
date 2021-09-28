@@ -12,23 +12,35 @@ int main(int argc, char *argv[])
   FILE *inf, *outf;
   char *c;
   int all_seven_flag;
-
+  int use_popular = 0;
+  int l_index = 1;
+  
   if ( argc < 2 ) {
-    printf("usage: ./sbs <seven-letters>\n");
+    printf("usage: ./sbs [-p] <seven-letters>\n");
     printf(" where the first letter must be the center letter\n");
     exit(0);
   }
-  center_letter = (int)argv[1][0];
+  if ( argv[l_index][0] == '-' && argv[l_index][1] == 'p' ) {
+    l_index += 1;
+    use_popular = 1;
+  }
+  
+  center_letter = (int)argv[l_index][0];
 
-  c = &argv[1][0];
+  c = &argv[l_index][0];
   while ( *c != 0 ) {
     ok_buf[*c] = 1;
     c += 1;
   }
 
-  inf = fopen("sbs_words.txt", "r");
-  if ( !inf ) { printf("sbs_words.txt not found\n"); exit(0); }
-
+  if ( use_popular ) {
+    inf = fopen("popular.txt", "r");
+  } else {
+    inf = fopen("sbs_words.txt", "r");
+  }
+  
+  if ( !inf ) { printf("%s not found\n",use_popular ? "popular.txt" : "sbs_words.txt"); exit(0); }
+  
   while ( fgets(work_buffer,sizeof(work_buffer), inf) ) {
     int len;
 
@@ -36,8 +48,8 @@ int main(int argc, char *argv[])
     c = strchr(work_buffer,'\n'); if ( c ) *c = 0;
     len = strlen(work_buffer);
 
-#if 0
     if ( len < 4 ) continue;
+#if 0
     c = work_buffer;
     while ( *c != 0 ) {
       *c = tolower(*c);
@@ -56,7 +68,7 @@ int main(int argc, char *argv[])
     }
 
 /* display * only if contains all letters */
-   c = &argv[1][0];
+   c = &argv[l_index][0];
    all_seven_flag = 0;
    while ( *c != 0 ) {
     if ( !strchr(work_buffer, *c) ) goto onward;
@@ -71,7 +83,7 @@ onward:;
       printf("       %s\n",work_buffer);
 
 /* add ed if necessary */
-  if ( strchr(argv[1],'e') && strchr(argv[1],'d') ) {
+  if ( strchr(argv[l_index],'e') && strchr(argv[l_index],'d') ) {
 	int l;
 	char ne[32];
 	int rule=0;
@@ -97,4 +109,3 @@ onward:;
   fclose(inf);
   return 0;
 }
-
