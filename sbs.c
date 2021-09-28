@@ -39,7 +39,12 @@ int main(int argc, char *argv[])
     inf = fopen("sbs_words.txt", "r");
   }
   
-  if ( !inf ) { printf("%s not found\n",use_popular ? "popular.txt" : "sbs_words.txt"); exit(0); }
+  if ( !inf ) {
+    printf("%s not found\n",use_popular ? "popular.txt" : "sbs_words.txt");
+    exit(0);
+  }
+
+  printf("Letters: %s\n",argv[l_index]);
   
   while ( fgets(work_buffer,sizeof(work_buffer), inf) ) {
     int len;
