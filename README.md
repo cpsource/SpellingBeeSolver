@@ -41,10 +41,14 @@ Notes
 
 Make your own SpellingBee
 
-  ./pang | sort > new_pangrams.txt
+  ./pang -p | sort > new_pangrams.txt
 
-  Where new_pangrams.txt is a three column list as follows:
-    count of words found , pangram letters , pangram word
+  If -p is specified, use a condensed word dictionary
+
+  Where new_pangrams.txt is a four column list as follows:
+    pangrams , count of words found , pangram letters , pangram word
+
+  You can also sort by count of words: sort --key=1.7,1.11 --key=2.1,2.5
 
   Then check a particular set of pangram letters against sbs to be
   sure there are real words.
