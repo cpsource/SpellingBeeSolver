@@ -1,3 +1,4 @@
+/* sbs.c - SpellingBeeSolutions */
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
@@ -45,6 +46,10 @@ int main(int argc, char *argv[])
   }
 
   printf("Letters: %s\n",argv[l_index]);
+  if ( use_popular )
+    printf("Open: popular.txt\n");
+  else
+    printf("Open: sbs_words.txt\n");
   
   while ( fgets(work_buffer,sizeof(work_buffer), inf) ) {
     int len;
