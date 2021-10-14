@@ -2,6 +2,7 @@
 ans*.txt
 sbs
 sbs_words.txt
+sbs_ita_words.txt
 setup
 access*.token
 push.sh
@@ -9,4 +10,3 @@ zz*
 \#*\#
 pang
 *~
-seven_words.txt

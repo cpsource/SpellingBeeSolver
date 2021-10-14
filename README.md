@@ -10,7 +10,7 @@ Build Instructions
 
 Run Instructions
 
-  ./sbs [-p] <seven-puzzle-letters>
+  ./sbs [-p] [-i] <seven-puzzle-letters>
 
   where the first letter must be the center letter.
 
@@ -18,7 +18,10 @@ Run Instructions
 
   if -p is specified, use dictionary popular.txt. It contains
   less garbage words than sbs_words.txt.
-  
+ 
+  if -i is specified, use itialian nown dictionary. This can not be used
+  at the same time as -p.
+ 
 Example from 09/15/2021 NYT
 
   ./sbs iardlno > ans.txt

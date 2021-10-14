@@ -15,9 +15,11 @@ int main(int argc, char *argv[])
   int all_seven_flag;
   int use_popular = 0;
   int l_index = 1;
+  int use_ita = 0;
+  char filename[64];
   
   if ( argc < 2 ) {
-    printf("usage: ./sbs [-p] <seven-letters>\n");
+    printf("usage: ./sbs [-p] [-i] <seven-letters>\n");
     printf(" where the first letter must be the center letter\n");
     exit(0);
   }
@@ -25,31 +27,38 @@ int main(int argc, char *argv[])
     l_index += 1;
     use_popular = 1;
   }
+  if ( argv[l_index][0] == '-' && argv[l_index][1] == 'i' ) {
+    l_index += 1;
+    use_ita = 1;
+  }
   
   center_letter = (int)argv[l_index][0];
 
+  /* allow only these letters */
   c = &argv[l_index][0];
   while ( *c != 0 ) {
     ok_buf[*c] = 1;
     c += 1;
   }
 
-  if ( use_popular ) {
-    inf = fopen("popular.txt", "r");
+  /* get right dictionary */
+  if ( use_ita ) {
+    strcpy(filename,"sbs_ita_words.txt");
   } else {
-    inf = fopen("sbs_words.txt", "r");
+    if ( use_popular ) {
+      strcpy(filename,"popular.txt");
+    } else {
+      strcpy(filename,"sbs_words.txt");
+    }
   }
-  
+  inf = fopen(filename, "r");
   if ( !inf ) {
-    printf("%s not found\n",use_popular ? "popular.txt" : "sbs_words.txt");
+    printf("%s not found\n",filename);
     exit(0);
   }
 
   printf("Letters: %s\n",argv[l_index]);
-  if ( use_popular )
-    printf("Open: popular.txt\n");
-  else
-    printf("Open: sbs_words.txt\n");
+  printf("Open: %s\n",filename);
   
   while ( fgets(work_buffer,sizeof(work_buffer), inf) ) {
     int len;
@@ -92,8 +101,9 @@ onward:;
     else
       printf("       %s\n",work_buffer);
 
-/* add ed if necessary */
-  if ( strchr(argv[l_index],'e') && strchr(argv[l_index],'d') ) {
+    if ( !use_ita ) {
+      /* add ed if necessary */
+      if ( strchr(argv[l_index],'e') && strchr(argv[l_index],'d') ) {
 	int l;
 	char ne[32];
 	int rule=0;
@@ -112,7 +122,8 @@ onward:;
 	if ( rule && strlen(c) <= 8 ) {
 	  printf("ed(%d): %s\n",rule,c);
 	}
-  } // ed check
+      } // ed check
+    } // use_ita
 
   next:;
   }

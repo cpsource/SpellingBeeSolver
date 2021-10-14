@@ -29,9 +29,107 @@ int is_uniq(char *str)
   return u;
 }
 
-int main(int argc, char *argv[])
+int main1(int argc, char *argv[])
 {
-  FILE *inf, *outf, *out7;
+  FILE *inf, *outf;
+  char *c;
+  int ok_flag;
+  int symbol_count;
+  int i;
+  char *work_buffer_ptr;
+  
+  for ( i = 'a' ; i <= 'z' ; i++ ) {
+    ok_buf[i] = 1;
+  }
+
+  inf = fopen("itwac_nouns_lemmas_notail_2_0_0.csv", "r");
+  if ( !inf ) { printf("itwac_nouns_lemmas_notail_2_0_0.csv not found\n"); exit(0); }
+  outf = fopen("sbs_ita_words.txt","w+");
+  if ( !outf) { printf("could not create sbs_ita_words.txt\n"); exit(0); }
+
+  while ( fgets(work_buffer,sizeof(work_buffer), inf) ) {
+    int len;
+
+    work_buffer_ptr = work_buffer;
+    
+    if ( strlen(work_buffer) == 0 ) continue;
+    c = strchr(work_buffer,'\n'); if ( c ) *c = 0;
+
+    /* of the form "word", ... */
+    if ( *work_buffer_ptr != '"' ) continue;
+    work_buffer_ptr += 1;
+    c = strchr(work_buffer_ptr,'"');
+    if ( !c ) continue;
+    *c = 0;
+    
+    len = strlen(work_buffer_ptr);
+    if ( len < 4 ) continue;
+
+    //printf("%4d : %s\n",len,work_buffer);
+
+/* make all lower case */
+    c = work_buffer_ptr;
+    while ( *c != 0 ) {
+      *c = tolower(*c);
+      c += 1;
+    }
+
+    //printf("%4d : %s\n",len,work_buffer);
+
+/* only take these symbols */
+    c = work_buffer_ptr;
+    while ( *c != 0 ) {
+      if ( !ok_buf[*c] ) goto next;
+      c += 1;
+    }
+
+    //printf("%4d %s\n",len,work_buffer);
+
+    ok_flag = 0; 
+    switch ( len ) {
+	case 4:
+	case 5:
+	case 6:
+	case 7:
+		ok_flag = 1;
+		break;
+	case 8:
+	case 9:
+	case 10:
+	case 11:
+	case 12:
+		/* must contain 1->7 symbols */
+		memset(symbols,0,sizeof(symbols));
+		c = work_buffer_ptr;
+		while ( *c != 0 ) {
+			symbols[*c] = 1;
+			c += 1;
+		}
+		for ( symbol_count = i = 0 ; i < 256 ; i++ ) {
+			if ( symbols[i] ) symbol_count += 1;
+		}
+		if ( symbol_count >= 1 && symbol_count <= 7 ) ok_flag=1;
+		break;
+	default:
+		break;
+    } /* switch */
+
+    if ( ok_flag ) {
+	fprintf(outf,"%s\n",work_buffer_ptr);
+	//printf("%s\n",work_buffer);
+    } else {
+	printf("BAD: %s\n",work_buffer_ptr);
+    }
+
+  next:;
+  } /* while inf */
+  fclose(inf); fclose(outf);
+  return 0;
+}
+
+int main2(int argc, char *argv[])
+{
+  FILE *inf, *outf;
   char *c;
   int ok_flag;
   int symbol_count;
@@ -45,8 +143,6 @@ int main(int argc, char *argv[])
   if ( !inf ) { printf("words.txt not found\n"); exit(0); }
   outf = fopen("sbs_words.txt","w+");
   if ( !outf) { printf("could not create sbs_words.txt\n"); exit(0); }
-  out7 = fopen("seven_words.txt","w+");
-  if ( !out7 ) { printf("could not create seven_words.txt\n"); exit(0); }
 
   while ( fgets(work_buffer,sizeof(work_buffer), inf) ) {
     int len;
@@ -107,7 +203,6 @@ int main(int argc, char *argv[])
 
     if ( ok_flag ) {
 	fprintf(outf,"%s\n",work_buffer);
-	if ( 7 == is_uniq(work_buffer)) fprintf(out7,"%s\n",work_buffer);
 	//printf("%s\n",work_buffer);
     } else {
 	printf("BAD: %s\n",work_buffer);
@@ -119,3 +214,9 @@ int main(int argc, char *argv[])
   return 0;
 }
 
+int main(int argc, char *argv[] )
+{
+  main1(argc,argv);
+  main2(argc,argv);
+  return 0;
+}
