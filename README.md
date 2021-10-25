@@ -60,3 +60,10 @@ Coming Soon
 
   As we supported 'ed', we will support 'ing' as well.
 
+Note:
+
+  You can now use aspell to filter ans.txt words. Just use the
+  -a switch on the sbs command line. But to do so, replace
+  prog/aspell.cpp with the file in this kit, which is hacked
+  up terribly. See NO_STOP_HACK for details.
+

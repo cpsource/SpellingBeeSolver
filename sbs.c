@@ -10,6 +10,9 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
+// -a flag - use aspell
+int use_a = 0;
+
 unsigned char work_buffer[256];
 unsigned char ok_buf[256];
 int center_letter;
@@ -137,7 +140,7 @@ int main(int argc, char *argv[])
   ANS_TXT *tmp;
   
   if ( argc < 2 ) {
-    printf("usage: ./sbs [-p] [-i] <seven-letters>\n");
+    printf("usage: ./sbs [-a] [-p] [-i] <seven-letters>\n");
     printf(" where the first letter must be the center letter\n");
     exit(0);
   }
@@ -148,6 +151,10 @@ int main(int argc, char *argv[])
   if ( argv[l_index][0] == '-' && argv[l_index][1] == 'i' ) {
     l_index += 1;
     use_ita = 1;
+  }
+  if ( argv[l_index][0] == '-' && argv[l_index][1] == 'a' ) {
+    l_index += 1;
+    use_a = 1;
   }
   
   center_letter = (int)argv[l_index][0];
@@ -273,10 +280,15 @@ onward:;
 
   // lets run aspell against it - reuse filename
 #define SYSTEM_CALL "aspell -c %s > %s"
-  
-  sprintf(filename,SYSTEM_CALL, ANS_TXT_STR, BADS_TXT_STR);
-  printf("%d: system command <%s>\n",__LINE__,filename);
-  
+
+  if ( use_a ) {
+    sprintf(filename,SYSTEM_CALL, ANS_TXT_STR, BADS_TXT_STR);
+  } else {
+    sprintf(filename,"unlink %s; touch %s", BADS_TXT_STR, BADS_TXT_STR);
+  }
+
+  //printf("%d: system command <%s>\n",__LINE__,filename);
+    
   if ( system(filename) ) {
     fprintf(stderr,"%d: system call %s failed\n",__LINE__,filename);
     exit(0);
