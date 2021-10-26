@@ -284,7 +284,7 @@ onward:;
   if ( use_a ) {
     sprintf(filename,SYSTEM_CALL, ANS_TXT_STR, BADS_TXT_STR);
   } else {
-    sprintf(filename,"unlink %s; touch %s", BADS_TXT_STR, BADS_TXT_STR);
+    sprintf(filename,"rm -f %s; touch %s", BADS_TXT_STR, BADS_TXT_STR);
   }
 
   //printf("%d: system command <%s>\n",__LINE__,filename);
