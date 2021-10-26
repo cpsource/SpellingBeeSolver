@@ -143,6 +143,7 @@ int main(int argc, char *argv[])
   ANS_TXT *tmp;
 
   printf("%s.%s\n",VERSION_STR,GIT_VERSION);
+  printf("Build Date: %s\n",BUILD_DATE);
   
   if ( argc < 2 ) {
     printf("usage: ./sbs [-a] [-p] [-i] <seven-letters>\n");
@@ -314,6 +315,7 @@ onward:;
     exit(0);
   }
   fprintf(outf,"sbs %s.%s\n",VERSION_STR,GIT_VERSION);
+  fprintf(outf,"Build Date: %s\n",BUILD_DATE);
   fprintf(outf,"Letters: %s\n",argv[l_index]);
   fprintf(outf,"Open: %s\n",filename);
   tmp = root_ans_txt;
