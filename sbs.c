@@ -142,7 +142,7 @@ int main(int argc, char *argv[])
   char system_cmd[64];
   ANS_TXT *tmp;
 
-  printf("%s\n",VERSION_STR);
+  printf("%s.%s\n",VERSION_STR,GIT_VERSION);
   
   if ( argc < 2 ) {
     printf("usage: ./sbs [-a] [-p] [-i] <seven-letters>\n");
@@ -313,7 +313,7 @@ onward:;
     printf("%d: %s can't be created\n",__LINE__,ANS_TXT_STR);
     exit(0);
   }
-  fprintf(outf,"sbs %s\n",VERSION_STR);
+  fprintf(outf,"sbs %s.%s\n",VERSION_STR,GIT_VERSION);
   fprintf(outf,"Letters: %s\n",argv[l_index]);
   fprintf(outf,"Open: %s\n",filename);
   tmp = root_ans_txt;
