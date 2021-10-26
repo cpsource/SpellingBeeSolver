@@ -10,6 +10,8 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
+#include "version.h"
+
 // -a flag - use aspell
 int use_a = 0;
 
@@ -139,6 +141,8 @@ int main(int argc, char *argv[])
   char filename[64];
   char system_cmd[64];
   ANS_TXT *tmp;
+
+  printf("%s\n",VERSION_STR);
   
   if ( argc < 2 ) {
     printf("usage: ./sbs [-a] [-p] [-i] <seven-letters>\n");
@@ -309,6 +313,7 @@ onward:;
     printf("%d: %s can't be created\n",__LINE__,ANS_TXT_STR);
     exit(0);
   }
+  fprintf(outf,"sbs %s\n",VERSION_STR);
   fprintf(outf,"Letters: %s\n",argv[l_index]);
   fprintf(outf,"Open: %s\n",filename);
   tmp = root_ans_txt;
