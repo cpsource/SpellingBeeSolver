@@ -137,6 +137,7 @@ int main(int argc, char *argv[])
   int l_index = 1;
   int use_ita = 0;
   char filename[64];
+  char system_cmd[64];
   ANS_TXT *tmp;
   
   if ( argc < 2 ) {
@@ -278,19 +279,19 @@ onward:;
   }
   fclose(outf);
 
-  // lets run aspell against it - reuse filename
+  // lets run aspell against it
 #define SYSTEM_CALL "aspell -c %s > %s"
 
   if ( use_a ) {
-    sprintf(filename,SYSTEM_CALL, ANS_TXT_STR, BADS_TXT_STR);
+    sprintf(system_cmd,SYSTEM_CALL, ANS_TXT_STR, BADS_TXT_STR);
   } else {
-    sprintf(filename,"rm -f %s; touch %s", BADS_TXT_STR, BADS_TXT_STR);
+    sprintf(system_cmd,"rm -f %s; touch %s", BADS_TXT_STR, BADS_TXT_STR);
   }
 
-  //printf("%d: system command <%s>\n",__LINE__,filename);
+  //printf("%d: system command <%s>\n",__LINE__,system_cmd);
     
-  if ( system(filename) ) {
-    fprintf(stderr,"%d: system call %s failed\n",__LINE__,filename);
+  if ( system(system_cmd) ) {
+    fprintf(stderr,"%d: system call %s failed\n",__LINE__,system_cmd);
     exit(0);
   }
   
@@ -308,11 +309,14 @@ onward:;
     printf("%d: %s can't be created\n",__LINE__,ANS_TXT_STR);
     exit(0);
   }
+  fprintf(outf,"Letters: %s\n",argv[l_index]);
+  fprintf(outf,"Open: %s\n",filename);
   tmp = root_ans_txt;
   while ( tmp ) {
     if ( !(tmp->flags & FLAGS_bad) )  {
       if ( tmp->flags & FLAGS_pangram )  {
 	fprintf(outf,"* %s\n",tmp->word);
+	fprintf(stdout,"* %s\n",tmp->word);
       } else {
 	fprintf(outf,"%s\n",tmp->word);
       }
