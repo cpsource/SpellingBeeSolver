@@ -67,3 +67,8 @@ Note:
   prog/aspell.cpp with the file in this kit, which is hacked
   up terribly. See NO_STOP_HACK for details.
 
+Nore:
+
+  To add words, add to top of words.txt, then run setup. To add
+  words to aspell, edit the word into script add_words.sh, then
+  run the script.
