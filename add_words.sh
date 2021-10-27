@@ -1,7 +1,7 @@
 #!/bin/bash
 # Note: don't run with su
-#echo -e "*unitarian\n#" | aspell -a
-#echo -e "*inurn\n#" | aspell -a
+echo -e "*unitarian\n#" | aspell -a
+echo -e "*inurn\n#" | aspell -a
 # Words from Oct 27, 2021
 echo -e "*telehealth\n#" | aspell -a
 echo -e "*hatha\n#" | aspell -a

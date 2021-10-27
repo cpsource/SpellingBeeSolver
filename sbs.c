@@ -169,6 +169,19 @@ int is_pangram(char *seven_letters, char *word )
   return FLAGS_pangram; // is a pangram
 }
 
+#if defined(USE_DEBUG)
+void dump_list(void)
+{
+  ANS_TXT *next = root_ans_txt;
+
+  while ( next ) {
+    printf("%s : %08x\n",
+	   next->word, next->flags);
+    next = next->next;
+  }
+}
+#endif
+
 int main(int argc, char *argv[])
 {
   FILE *inf, *outf;
@@ -366,6 +379,10 @@ int main(int argc, char *argv[])
     tmp = tmp->next;
   }
   fclose(outf);
+
+#if defined(USE_DEBUG)
+  dump_list();
+#endif
   
   // done. Note - let exit do all memory cleanup
   return 0;
