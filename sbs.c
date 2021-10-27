@@ -159,7 +159,6 @@ void save_word ( char *word, int flags )
 /* return FLAGS_pangram if it's a pangram */
 int is_pangram(char *seven_letters, char *word )
 {
-  int res = 0;
   char *c = seven_letters;
   
   while ( *c != 0 ) {
@@ -207,7 +206,7 @@ int main(int argc, char *argv[])
   /* allow only these letters */
   c = &argv[l_index][0];
   while ( *c != 0 ) {
-    ok_buf[*c] = 1;
+    ok_buf[(int)*c] = 1;
     c += 1;
   }
   
@@ -232,17 +231,17 @@ int main(int argc, char *argv[])
   printf("Open: %s\n",filename);
   
   // scan entire word list *.txt
-  while ( fgets(work_buffer,sizeof(work_buffer), inf) ) {
+  while ( fgets((char * restrict)work_buffer,sizeof(work_buffer), inf) ) {
     int len;
     
     // get rid of obviously invalid records
-    if ( strlen(work_buffer) == 0 ) continue;
+    if ( strlen((const char *)work_buffer) == 0 ) continue;
     
     // get rid of new-line
-    c = strchr(work_buffer,'\n'); if ( c ) *c = 0;
+    c = strchr((const char *)work_buffer,'\n'); if ( c ) *c = 0;
     
     // save length of string
-    len = strlen(work_buffer);
+    len = strlen((const char *)work_buffer);
     
     // reject any words less than 4 in length
     if ( len < 4 ) continue;
@@ -255,19 +254,18 @@ int main(int argc, char *argv[])
 #endif // 0
     
     /* must contain center letter */
-    if ( !strchr(work_buffer, center_letter) ) continue;
+    if ( !strchr((const char *)work_buffer, center_letter) ) continue;
     
     /* can only use these letters */
-    c = work_buffer;
+    c = (char *)work_buffer;
     while ( *c != 0 ) {
-      if ( !ok_buf[*c] ) goto next;
+      if ( !ok_buf[(int)*c] ) goto next;
       c += 1;
     }
     
     /* display * only if contains all letters, ie, it's a pangram */
     
-  onward:;
-    save_word(work_buffer, is_pangram(&argv[l_index][0], work_buffer) );
+    save_word((char *)work_buffer, is_pangram(&argv[l_index][0], (char *)work_buffer) );
     
     // process ed rule
     if ( !use_ita ) {
@@ -276,7 +274,7 @@ int main(int argc, char *argv[])
 	int l;
 	char ne[32];
 	int rule=0;
-	strcpy(ne,work_buffer);
+	strcpy(ne,(const char * restrict)work_buffer);
 	c = ne;
 	l = strlen(c);
 	if ( c[l-1] == 'e' ) {
