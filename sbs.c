@@ -155,6 +155,20 @@ void save_word ( char *word, int flags )
   root_ans_txt = new;
 }
 
+/* return FLAGS_pangram if it's a pangram */
+int is_pangram(char *seven_letters, char *word )
+{
+  int res = 0;
+  char *c = seven_letters;
+  
+  while ( *c != 0 ) {
+    if ( !strchr(word, *c) ) return FLAGS_none; // not a pangram
+    c += 1;
+  }
+  
+  return FLAGS_pangram; // is a pangram
+}
+
 int main(int argc, char *argv[])
 {
   FILE *inf, *outf;
@@ -166,7 +180,7 @@ int main(int argc, char *argv[])
   char filename[64];
   char system_cmd[64];
   ANS_TXT *tmp;
-
+  
   printf("%s.%s\n",VERSION_STR,GIT_VERSION);
   printf("Build Date: %s\n",BUILD_DATE);
   
@@ -189,14 +203,14 @@ int main(int argc, char *argv[])
   }
   
   center_letter = (int)argv[l_index][0];
-
+  
   /* allow only these letters */
   c = &argv[l_index][0];
   while ( *c != 0 ) {
     ok_buf[*c] = 1;
     c += 1;
   }
-
+  
   /* get right dictionary */
   if ( use_ita ) {
     strcpy(filename,"sbs_ita_words.txt");
@@ -212,17 +226,25 @@ int main(int argc, char *argv[])
     printf("%s not found\n",filename);
     exit(0);
   }
-
+  
+  // print some stats
   printf("Letters: %s\n",argv[l_index]);
   printf("Open: %s\n",filename);
   
+  // scan entire word list *.txt
   while ( fgets(work_buffer,sizeof(work_buffer), inf) ) {
     int len;
-
+    
+    // get rid of obviously invalid records
     if ( strlen(work_buffer) == 0 ) continue;
+    
+    // get rid of new-line
     c = strchr(work_buffer,'\n'); if ( c ) *c = 0;
+    
+    // save length of string
     len = strlen(work_buffer);
-
+    
+    // reject any words less than 4 in length
     if ( len < 4 ) continue;
 #if 0
     c = work_buffer;
@@ -231,36 +253,41 @@ int main(int argc, char *argv[])
       c += 1;
     }
 #endif // 0
-
+    
     /* must contain center letter */
     if ( !strchr(work_buffer, center_letter) ) continue;
-
+    
     /* can only use these letters */
     c = work_buffer;
     while ( *c != 0 ) {
       if ( !ok_buf[*c] ) goto next;
       c += 1;
     }
-
-/* display * only if contains all letters */
-   c = &argv[l_index][0];
-   all_seven_flag = 0;
-   while ( *c != 0 ) {
-    if ( !strchr(work_buffer, *c) ) goto onward;
-    c += 1;
-   }
-   all_seven_flag = 1;
-
-onward:;
-   save_word(work_buffer, all_seven_flag ? FLAGS_pangram : FLAGS_none);
-
+    
+    /* display * only if contains all letters, ie, it's a pangram */
+    all_seven_flag = is_pangram(&argv[l_index][0], work_buffer);
+#if 0    
+    c = &argv[l_index][0];
+    all_seven_flag = 0;
+    while ( *c != 0 ) {
+      if ( !strchr(work_buffer, *c) ) goto onward; // letter is not found, can't be pangram
+      c += 1;
+    }
+    all_seven_flag = 1;
+#endif // 0
+    
+  onward:;
+    save_word(work_buffer, all_seven_flag ? FLAGS_pangram : FLAGS_none);
+    
 #if 0
-   if ( all_seven_flag )
+    // debug only
+    if ( all_seven_flag )
       printf("       * %s\n",work_buffer);
     else
       printf("       %s\n",work_buffer);
 #endif
-   
+    
+    // process ed rule
     if ( !use_ita ) {
       /* add ed if necessary */
       if ( strchr(argv[l_index],'e') && strchr(argv[l_index],'d') ) {
@@ -279,22 +306,19 @@ onward:;
 	    rule=2;
 	  }
 	}
-	if ( rule && strlen(c) <= 8 ) {
-#if 1
-	  save_word(c,FLAGS_none);
-#else	  
-	  printf("ed(%d): %s\n",rule,c);
-#endif	  
+	if ( rule && strlen(c) <= 14 ) {
+	  save_word(c,is_pangram(&argv[l_index][0],ne));
 	}
       } // ed check
     } // use_ita
-
+    
   next:;
-  }
+  } // while fgets
+  
   fclose(inf);
-
+  
   // so we have a possible list stored at root_ans_list
-
+  
   // generate a prototype ans.txt
   unlink(ANS_TXT_STR);
   outf = fopen(ANS_TXT_STR,"w");
@@ -308,18 +332,18 @@ onward:;
     tmp = tmp->next;
   }
   fclose(outf);
-
+  
   // lets run aspell against it
 #define SYSTEM_CALL "aspell -c %s > %s"
-
+  
   if ( use_a ) {
     sprintf(system_cmd,SYSTEM_CALL, ANS_TXT_STR, BADS_TXT_STR);
   } else {
     sprintf(system_cmd,"rm -f %s; touch %s", BADS_TXT_STR, BADS_TXT_STR);
   }
-
+  
   //printf("%d: system command <%s>\n",__LINE__,system_cmd);
-    
+  
   if ( system(system_cmd) ) {
     fprintf(stderr,"%d: system call %s failed\n",__LINE__,system_cmd);
     exit(0);
@@ -327,10 +351,10 @@ onward:;
   
   // lets load bads.txt into memory
   open_fd_ro ( );
-
+  
   // mark any bads
   walk_bad_buf();
-
+  
   // mark duplicates
   walk_for_duplicates();
   
