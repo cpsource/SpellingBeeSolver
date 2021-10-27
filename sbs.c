@@ -173,7 +173,6 @@ int main(int argc, char *argv[])
 {
   FILE *inf, *outf;
   char *c;
-  int all_seven_flag;
   int use_popular = 0;
   int l_index = 1;
   int use_ita = 0;
@@ -265,27 +264,9 @@ int main(int argc, char *argv[])
     }
     
     /* display * only if contains all letters, ie, it's a pangram */
-    all_seven_flag = is_pangram(&argv[l_index][0], work_buffer);
-#if 0    
-    c = &argv[l_index][0];
-    all_seven_flag = 0;
-    while ( *c != 0 ) {
-      if ( !strchr(work_buffer, *c) ) goto onward; // letter is not found, can't be pangram
-      c += 1;
-    }
-    all_seven_flag = 1;
-#endif // 0
     
   onward:;
-    save_word(work_buffer, all_seven_flag ? FLAGS_pangram : FLAGS_none);
-    
-#if 0
-    // debug only
-    if ( all_seven_flag )
-      printf("       * %s\n",work_buffer);
-    else
-      printf("       %s\n",work_buffer);
-#endif
+    save_word(work_buffer, is_pangram(&argv[l_index][0], work_buffer) );
     
     // process ed rule
     if ( !use_ita ) {
