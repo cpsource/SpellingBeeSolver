@@ -7,9 +7,9 @@ all: setup sbs pang
 pang: pang.c
 	gcc -O2 -o pang pang.c
 
-setup: setup.c
+setup: config.h setup.c
 	gcc -O2 -o setup setup.c
 
-sbs: version.h sbs.c
+sbs: config.h version.h sbs.c
 	gcc -DGIT_VERSION=\"$(GIT_VERSION)\" -DBUILD_DATE=\"$(BUILD_DATE)\" -O2 -o sbs sbs.c
 

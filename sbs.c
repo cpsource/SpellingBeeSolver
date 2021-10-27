@@ -10,6 +10,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
+#include "config.h"
 #include "version.h"
 
 // -a flag - use aspell
@@ -287,7 +288,7 @@ int main(int argc, char *argv[])
 	    rule=2;
 	  }
 	}
-	if ( rule && strlen(c) <= 14 ) {
+	if ( rule && (strlen(c) <= (MAX_WORD_LENGTH + 2)) ) {
 	  save_word(c,is_pangram(&argv[l_index][0],ne));
 	}
       } // ed check
