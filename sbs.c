@@ -22,6 +22,7 @@ int center_letter;
 #define FLAGS_none    0
 #define FLAGS_pangram 1
 #define FLAGS_bad     2
+#define FLAGS_duplicate 4
 
 #define WORD_MAX 32
 typedef struct ans_txt {
@@ -37,6 +38,30 @@ ANS_TXT *root_ans_txt = NULL;
 
 int fd = 0;
 char *bad_buf = NULL;
+
+// return true if word exists from search_point on
+void flag_all_duplicates ( ANS_TXT *search_point, char *word )
+{
+  ANS_TXT *next = search_point;
+  
+  while ( next ) {
+    if ( 0 == strcmp(next->word,word) ) {
+      next->flags |= FLAGS_duplicate;
+    }
+    next = next->next;
+  }
+  return;
+}
+void walk_for_duplicates ( void )
+{
+  ANS_TXT *next = root_ans_txt;
+
+  while ( next ) {
+    flag_all_duplicates(next->next,next->word);
+    next = next->next;
+  }
+  return;
+}
 
 void open_fd_ro ( void )
 {
@@ -305,6 +330,9 @@ onward:;
 
   // mark any bads
   walk_bad_buf();
+
+  // mark duplicates
+  walk_for_duplicates();
   
   // dump list root_ans_txt if not bad
   // generate corrected ans.txt
@@ -320,14 +348,17 @@ onward:;
   fprintf(outf,"Open: %s\n",filename);
   tmp = root_ans_txt;
   while ( tmp ) {
-    if ( !(tmp->flags & FLAGS_bad) )  {
-      if ( tmp->flags & FLAGS_pangram )  {
-	fprintf(outf,"* %s\n",tmp->word);
-	fprintf(stdout,"* %s\n",tmp->word);
-      } else {
-	fprintf(outf,"%s\n",tmp->word);
+    if ( !(tmp->flags & FLAGS_duplicate) )  {
+      if ( !(tmp->flags & FLAGS_bad) )  {
+	if ( tmp->flags & FLAGS_pangram )  {
+	  fprintf(outf,"* %s\n",tmp->word);
+	  fprintf(stdout,"* %s\n",tmp->word);
+	} else {
+	  fprintf(outf,"%s\n",tmp->word);
+	}
       }
     }
+    
     tmp = tmp->next;
   }
   fclose(outf);
