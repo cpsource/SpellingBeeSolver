@@ -24,6 +24,7 @@ int center_letter;
 #define FLAGS_pangram 1
 #define FLAGS_bad     2
 #define FLAGS_duplicate 4
+#define FLAGS_printed 8
 
 #define WORD_MAX 32
 typedef struct ans_txt {
@@ -373,11 +374,39 @@ int main(int argc, char *argv[])
 	} else {
 	  fprintf(outf,"%s\n",tmp->word);
 	}
+	tmp->flags |= FLAGS_printed;
       }
     }
-    
+    // onward
     tmp = tmp->next;
   }
+
+  // now lets dump the entire list just in case
+  if ( use_a ) {
+    fprintf(outf,"\n");
+    fprintf(outf,"Entire Remaining List:\n");
+    fprintf(outf,"\n");
+    tmp = root_ans_txt;
+    while ( tmp ) {
+      if ( !(tmp->flags & FLAGS_duplicate) )  {
+	if ( tmp->flags & FLAGS_bad )  {
+	  if ( !(tmp->flags & FLAGS_printed) )  {
+	    if ( tmp->flags & FLAGS_pangram )  {
+	      fprintf(outf,"* %s\n",tmp->word);
+	      fprintf(stdout,"* %s\n",tmp->word);
+	    } else {
+	      fprintf(outf,"%s\n",tmp->word);
+	    }
+	    tmp->flags |= FLAGS_printed;
+	  } // FLAGS_printed
+	} // FLAGS_bad
+      } // FLAGS_duplicate
+      // onward
+      tmp = tmp->next;
+    } // while
+  } // use_a
+  
+  // close output file
   fclose(outf);
 
 #if defined(USE_DEBUG)

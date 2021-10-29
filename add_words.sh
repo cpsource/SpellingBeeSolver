@@ -5,4 +5,6 @@ echo -e "*inurn\n#" | aspell -a
 # Words from Oct 27, 2021
 echo -e "*telehealth\n#" | aspell -a
 echo -e "*hatha\n#" | aspell -a
-echo -e "*metalhead" | aspell -a
+echo -e "*metalhead\n#" | aspell -a
+# Words from Oct 28, 2021
+echo -e "*movably\n#" | aspell -a
