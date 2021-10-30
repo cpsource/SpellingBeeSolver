@@ -130,8 +130,9 @@ int main2(int argc, char *argv[])
     ok_buf[i] = 1;
   }
 
-  inf = fopen("words.txt", "r");
-  if ( !inf ) { printf("words.txt not found\n"); exit(0); }
+  inf = fopen("every-word.txt", "r");
+  if ( !inf ) { printf("every-word.txt \n"); exit(0); }
+  unlink("sbs_words.txt");
   outf = fopen("sbs_words.txt","w+");
   if ( !outf) { printf("could not create sbs_words.txt\n"); exit(0); }
 
