@@ -9,6 +9,7 @@
 #include <malloc.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <unistd.h>
 
 #include "config.h"
 #include "version.h"
