@@ -184,6 +184,20 @@ void dump_list(void)
 }
 #endif
 
+// return true if letters are valid
+int letters_valid ( char *buf )
+{
+  char *c;
+  
+  /* can only use these letters */
+  c = (char *)buf;
+  while ( *c != 0 ) {
+    if ( !ok_buf[(int)*c] ) return 0;
+    c += 1;
+  }
+  return 1;
+}
+    
 int main(int argc, char *argv[])
 {
   FILE *inf, *outf;
@@ -254,6 +268,9 @@ int main(int argc, char *argv[])
     
     // get rid of new-line
     c = strchr((const char *)work_buffer,'\n'); if ( c ) *c = 0;
+    // c = strchr((const char *)work_buffer,'\m'); if ( c ) *c = 0;
+    c = strchr((const char *)work_buffer,'\n'); if ( c ) *c = 0;
+    c = strchr((const char *)work_buffer,' '); if ( c ) *c = 0;
     
     // save length of string
     len = strlen((const char *)work_buffer);
@@ -270,69 +287,86 @@ int main(int argc, char *argv[])
     
     /* must contain center letter */
     if ( !strchr((const char *)work_buffer, center_letter) ) continue;
-    
-    /* can only use these letters */
-    c = (char *)work_buffer;
-    while ( *c != 0 ) {
-      if ( !ok_buf[(int)*c] ) goto next;
-      c += 1;
-    }
-    
-    /* display * only if contains all letters, ie, it's a pangram */
-    
-    save_word((char *)work_buffer, is_pangram(&argv[l_index][0], (char *)work_buffer) );
-    
-    // process ed rule
-    if ( !use_ita ) {
-      /* add ed if necessary */
-      if ( strchr(argv[l_index],'e') && strchr(argv[l_index],'d') ) {
-	int l;
-	char ne[32];
-	int rule=0;
-	strcpy(ne,(const char * restrict)work_buffer);
-	c = ne;
-	l = strlen(c);
-	if ( c[l-1] == 'e' ) {
-	  c[l] = 'd'; c[l+1]=0;
-	  rule=1;
-	} else {
-	  if ( !(c[l-2] == 'e' && c[l-1] == 'd') ) {
-	    c[l] = 'e'; c[l+1]='d'; c[l+2] = 0;
-	    rule=2;
-	  }
-	}
-	if ( rule && (strlen(c) <= (MAX_WORD_LENGTH + 2)) ) {
-	  save_word(c,is_pangram(&argv[l_index][0],ne));
-	}
-      } // ed check
-    } // use_ita
 
-    // process ing rule if not italian
+    // ing rule
     if ( !use_ita /* not italian */ ) {
-      /* add ing if we have the three letters in the puzzle */
-      if ( strchr(argv[l_index],'i') && strchr(argv[l_index],'n') && strchr(argv[l_index],'g') ) {
-	int l;
-	char ne[32];
-	int rule=0;
-	strcpy(ne,(const char * restrict)work_buffer);
-	l = strlen(ne);
-	/* is it already there ??? */
-	l -= 3;
-	if ( strcmp(&ne[l],"ing") ) {
-	  /* not already there */
-	  strcpy(&ne[l+3],"ing");
-	  rule = 3;
-	}
-	if ( rule && (strlen(ne) <= (MAX_WORD_LENGTH + 3)) ) {
+      int l;
+      char ne[32];
+
+      strcpy(ne,(char *)work_buffer);
+      l = strlen(ne);
+      // already there
+      if ( strcmp(&ne[l-3], "ing") ) {
+	// no, add it
+	strcpy(&ne[l-3],"ing");
+	if ( letters_valid(ne) ) {
 	  save_word(ne,is_pangram(&argv[l_index][0],ne));
 	}
-      } // ing check
-    } // use_ita
+      }
+    } // ing rule
+
+    // add ing if last letter is 'e'
+    if ( !use_ita /* not italian */ ) {
+      int l;
+      char ne[32];
+
+      strcpy(ne,(char *)work_buffer);
+      l = strlen(ne);
+      // e ???
+      if ( 'e' == ne[l-1] ) {
+	// yes, add it
+	strcpy(&ne[l-1],"ing");
+	if ( letters_valid(ne) ) {
+	  save_word(ne,is_pangram(&argv[l_index][0],ne));
+	}
+      }
+    } // add ing if last letter is 'e'
+
+    // add d if last letter is 'e'
+    if ( !use_ita /* not italian */ ) {
+      int l;
+      char ne[32];
+
+      strcpy(ne,(char *)work_buffer);
+      l = strlen(ne);
+      // e ???
+      if ( 'e' == ne[l-1] ) {
+	// yes, add it
+	strcpy(&ne[l],"d");
+	if ( letters_valid(ne) ) {
+	  save_word(ne,is_pangram(&argv[l_index][0],ne));
+	}
+      }
+    } // add d if last letter is 'e'
+
+    // add ed if not already there
+    if ( !use_ita /* not italian */ ) {
+      int l;
+      char ne[32];
+
+      strcpy(ne,(char *)work_buffer);
+      l = strlen(ne);
+      // already there
+      if ( strcmp(&ne[l-3], "ed") ) {
+	// no, add it
+	strcpy(&ne[l-3],"ing");
+	if ( letters_valid(ne) ) {
+	  save_word(ne,is_pangram(&argv[l_index][0],ne));
+	}
+      }
+    } // ing rule
     
-  next:;
+
+    // finally, add the word
+    if ( letters_valid((char *)work_buffer) ) {
+      save_word((char *)work_buffer, is_pangram(&argv[l_index][0], (char *)work_buffer) );
+    }
+    
   } // while fgets
   
   fclose(inf);
+
+  printf("end of while\n");
   
   // so we have a possible list stored at root_ans_list
   
@@ -349,6 +383,8 @@ int main(int argc, char *argv[])
     tmp = tmp->next;
   }
   fclose(outf);
+
+  printf("wrote first pass ans.txt\n");
   
   // lets run aspell against it
 #define SYSTEM_CALL "aspell -c %s > %s"
@@ -358,13 +394,15 @@ int main(int argc, char *argv[])
   } else {
     sprintf(system_cmd,"rm -f %s; touch %s", BADS_TXT_STR, BADS_TXT_STR);
   }
-  
+
   //printf("%d: system command <%s>\n",__LINE__,system_cmd);
   
   if ( system(system_cmd) ) {
     fprintf(stderr,"%d: system call %s failed\n",__LINE__,system_cmd);
     exit(0);
   }
+
+  printf("after system call\n");
   
   // lets load bads.txt into memory
   open_fd_ro ( );
