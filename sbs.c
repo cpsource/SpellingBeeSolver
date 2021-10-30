@@ -366,8 +366,6 @@ int main(int argc, char *argv[])
   
   fclose(inf);
 
-  printf("end of while\n");
-  
   // so we have a possible list stored at root_ans_list
   
   // generate a prototype ans.txt
@@ -384,8 +382,6 @@ int main(int argc, char *argv[])
   }
   fclose(outf);
 
-  printf("wrote first pass ans.txt\n");
-  
   // lets run aspell against it
 #define SYSTEM_CALL "aspell -c %s > %s"
   
