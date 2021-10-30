@@ -398,7 +398,6 @@ int main(int argc, char *argv[])
     exit(0);
   }
 
-  printf("after system call\n");
   
   // lets load bads.txt into memory
   open_fd_ro ( );
