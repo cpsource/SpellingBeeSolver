@@ -56,10 +56,6 @@ Make your own SpellingBee
   Then check a particular set of pangram letters against sbs to be
   sure there are real words.
   
-Coming Soon
-
-  As we supported 'ed', we will support 'ing' as well.
-
 Note:
 
   You can now use aspell to filter ans.txt words. Just use the

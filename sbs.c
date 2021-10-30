@@ -305,6 +305,28 @@ int main(int argc, char *argv[])
 	}
       } // ed check
     } // use_ita
+
+    // process ing rule if not italian
+    if ( !use_ita /* not italian */ ) {
+      /* add ing if we have the three letters in the puzzle */
+      if ( strchr(argv[l_index],'i') && strchr(argv[l_index],'n') && strchr(argv[l_index],'g') ) {
+	int l;
+	char ne[32];
+	int rule=0;
+	strcpy(ne,(const char * restrict)work_buffer);
+	l = strlen(ne);
+	/* is it already there ??? */
+	l -= 3;
+	if ( strcmp(&ne[l],"ing") ) {
+	  /* not already there */
+	  strcpy(&ne[l+3],"ing");
+	  rule = 3;
+	}
+	if ( rule && (strlen(ne) <= (MAX_WORD_LENGTH + 3)) ) {
+	  save_word(ne,is_pangram(&argv[l_index][0],ne));
+	}
+      } // ing check
+    } // use_ita
     
   next:;
   } // while fgets
