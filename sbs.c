@@ -208,6 +208,8 @@ int main(int argc, char *argv[])
   char filename[64];
   char system_cmd[64];
   ANS_TXT *tmp;
+  int approved_words = 0;
+  int other_words = 0;
   
   printf("%s.%s\n",VERSION_STR,GIT_VERSION);
   printf("Build Date: %s\n",BUILD_DATE);
@@ -424,6 +426,7 @@ int main(int argc, char *argv[])
   while ( tmp ) {
     if ( !(tmp->flags & FLAGS_duplicate) )  {
       if ( !(tmp->flags & FLAGS_bad) )  {
+	approved_words += 1;
 	if ( tmp->flags & FLAGS_pangram )  {
 	  fprintf(outf,"* %s\n",tmp->word);
 	  fprintf(stdout,"* %s\n",tmp->word);
@@ -437,6 +440,9 @@ int main(int argc, char *argv[])
     tmp = tmp->next;
   }
 
+  // dump stats
+  fprintf(stdout,"Approved Words: %d\n",approved_words);
+  
   // now lets dump the entire list just in case
   if ( use_a ) {
     fprintf(outf,"\n");
@@ -447,6 +453,7 @@ int main(int argc, char *argv[])
       if ( !(tmp->flags & FLAGS_duplicate) )  {
 	if ( tmp->flags & FLAGS_bad )  {
 	  if ( !(tmp->flags & FLAGS_printed) )  {
+	    other_words += 1;
 	    if ( tmp->flags & FLAGS_pangram )  {
 	      fprintf(outf,"* %s\n",tmp->word);
 	      fprintf(stdout,"* %s\n",tmp->word);
@@ -461,6 +468,9 @@ int main(int argc, char *argv[])
       tmp = tmp->next;
     } // while
   } // use_a
+
+  // dump stats
+  fprintf(stdout,"Other Words: %d\n",other_words);
   
   // close output file
   fclose(outf);
