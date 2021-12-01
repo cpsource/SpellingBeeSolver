@@ -185,7 +185,7 @@ void dump_list(void)
 #endif
 
 // return true if letters are valid
-int letters_valid ( char *buf )
+int letters_valid ( char *buf, int cl )
 {
   char *c;
   
@@ -195,6 +195,7 @@ int letters_valid ( char *buf )
     if ( !ok_buf[(int)*c] ) return 0;
     c += 1;
   }
+  if ( !strchr(buf,cl) ) return 0;
   return 1;
 }
     
@@ -232,7 +233,7 @@ int main(int argc, char *argv[])
     use_a = 1;
   }
   
-  center_letter = (int)argv[l_index][0];
+  center_letter = (int)argv[l_index][0] & 127;
   
   /* allow only these letters */
   c = &argv[l_index][0];
@@ -279,17 +280,28 @@ int main(int argc, char *argv[])
     
     // reject any words less than 4 in length
     if ( len < 4 ) continue;
-#if 0
-    c = work_buffer;
+#if 1
+    c = (char *)work_buffer;
     while ( *c != 0 ) {
-      *c = tolower(*c);
+      *c = tolower(*c) & 127;
       c += 1;
     }
 #endif // 0
+
+#if 1
+    c = (char *)work_buffer;
+    while ( *c != 0 ) {
+      if ( *c == (char )center_letter ) goto is_ok;
+      c += 1;
+    }
+    continue;
+  is_ok:;
     
+#else
     /* must contain center letter */
     if ( !strchr((const char *)work_buffer, center_letter) ) continue;
-
+#endif
+  
     // ing rule
     if ( !use_ita /* not italian */ ) {
       int l;
@@ -301,7 +313,7 @@ int main(int argc, char *argv[])
       if ( strcmp(&ne[l-3], "ing") ) {
 	// no, add it
 	strcpy(&ne[l-3],"ing");
-	if ( letters_valid(ne) ) {
+	if ( letters_valid(ne, center_letter) ) {
 	  save_word(ne,is_pangram(&argv[l_index][0],ne));
 	}
       }
@@ -318,7 +330,7 @@ int main(int argc, char *argv[])
       if ( 'e' == ne[l-1] ) {
 	// yes, add it
 	strcpy(&ne[l-1],"ing");
-	if ( letters_valid(ne) ) {
+	if ( letters_valid(ne, center_letter) ) {
 	  save_word(ne,is_pangram(&argv[l_index][0],ne));
 	}
       }
@@ -335,7 +347,7 @@ int main(int argc, char *argv[])
       if ( 'e' == ne[l-1] ) {
 	// yes, add it
 	strcpy(&ne[l],"d");
-	if ( letters_valid(ne) ) {
+	if ( letters_valid(ne, center_letter) ) {
 	  save_word(ne,is_pangram(&argv[l_index][0],ne));
 	}
       }
@@ -352,7 +364,7 @@ int main(int argc, char *argv[])
       if ( strcmp(&ne[l-3], "ed") ) {
 	// no, add it
 	strcpy(&ne[l-3],"ing");
-	if ( letters_valid(ne) ) {
+	if ( letters_valid(ne, center_letter) ) {
 	  save_word(ne,is_pangram(&argv[l_index][0],ne));
 	}
       }
@@ -360,7 +372,7 @@ int main(int argc, char *argv[])
     
 
     // finally, add the word
-    if ( letters_valid((char *)work_buffer) ) {
+    if ( letters_valid((char *)work_buffer, center_letter) ) {
       save_word((char *)work_buffer, is_pangram(&argv[l_index][0], (char *)work_buffer) );
     }
     
