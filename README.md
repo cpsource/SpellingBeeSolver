@@ -68,3 +68,24 @@ Nore:
   To add words, add to top of words.txt, then run setup. To add
   words to aspell, edit the word into script add_words.sh, then
   run the script.
+
+Note:
+
+  If you give up playing, bring up Firefox to the Spelling Bee page and
+  type a <ctrl> s, or select the three bars in the upper right and select
+  'save page as'. It saves the page, usually in Downloads, then
+  run extract_answers as follows:
+
+    ./extract_answers date saved-file
+
+  Example:
+
+  ./extract_answers Wednesday ~/Downloads/Spelling\ Bee-\ The\ New\ York\ Times.html
+
+  pangrams
+    ["objected"]
+  answers
+    ["objected","bedded","bobbed","bode","boded","booed","booted","cede","ceded","code",
+   "coded","coed","cooed","debt","deco","decoct","decocted","decode","decoded","deed",
+   "deeded","deject","dejected","detect","detected","dodo","dojo","dote","doted",
+   "dotted","ebbed","ejected","jetted","jobbed","jotted","teed","toed","tooted","toted"]
