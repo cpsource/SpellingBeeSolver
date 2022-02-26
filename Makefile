@@ -2,10 +2,10 @@
 GIT_VERSION := "$(shell git describe --abbrev=8 --dirty --always --tags)"
 BUILD_DATE  := "$(shell date)"
 
-all: setup sbs pang extract_answers
+all: setup sbs pang extract
 
-extract_answers: extract_answers.c
-	gcc -o extract_answers extract_answers.c
+extract: extract.c
+	gcc -o extract extract.c
 
 pang: pang.c
 	gcc -O2 -o pang pang.c
